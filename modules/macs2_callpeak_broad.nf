@@ -23,7 +23,7 @@ process MACS2_CALLPEAK_BROAD {
         --format BAMPE \\
         --gsize hs \\
         --name ${sample_id}_broad \\
-        --broad --broad-cutoff 0.1 \\
+        --broad --broad-cutoff 0.05 \\
         -q 0.05 \\
     """
 }

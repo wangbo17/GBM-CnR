@@ -23,8 +23,8 @@ process BOWTIE2_ALIGN {
     prefix_path=${bt2_index}/\$prefix_name
 
     bowtie2 \\
-        --local --very-sensitive-local \\
-        --no-unal \\
+        --local --very-sensitive --no-mixed --no-discordant \\
+        --phred33 -I 10 -X 700 \\
         -x \$prefix_path \\
         -1 ${read1} -2 ${read2} \\
         --threads ${task.cpus} \\

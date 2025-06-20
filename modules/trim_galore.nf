@@ -40,6 +40,13 @@ process TRIM_GALORE {
         ln -s \$read2_name \$target2
     fi
 
-    trim_galore --cores $cores --fastqc --paired \$target1 \$target2 --basename ${sample_id}
+    trim_galore \\
+        --cores $cores \\
+        --fastqc \\
+        --paired \$target1 \$target2 \\
+        --basename ${sample_id} \\
+        --quality 25 \\
+        --length 20 \\
+        --stringency 3
     """
 }

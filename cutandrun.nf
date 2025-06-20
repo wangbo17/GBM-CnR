@@ -6,9 +6,11 @@ include { TRIM_GALORE } from './modules/trim_galore.nf'
 include { BOWTIE2_BUILD } from './modules/bowtie2_build.nf'
 include { BOWTIE2_ALIGN } from './modules/bowtie2_align.nf'
 
+include { BAM_PROPER_FILTER } from './modules/bam_proper_filter.nf'
 include { PICARD_MARKDUPLICATES } from './modules/picard_markduplicates.nf'
-include { BAM_FILTER_INDEX } from './modules/bam_filter_index.nf'
+include { BAM_MAPQ20_FILTER } from './modules/bam_mapq20_filter.nf'
 
+include { SAMTOOLS_INDEX } from './modules/samtools_index.nf'
 include { SAMTOOLS_STATS } from './modules/samtools_stats.nf'
 include { SAMTOOLS_IDXSTATS } from './modules/samtools_idxstats.nf'
 include { SAMTOOLS_FLAGSTAT } from './modules/samtools_flagstat.nf'
@@ -80,27 +82,31 @@ workflow {
 
     // DUPLICATE REMOVAL AND FILTERING
 
-    PICARD_MARKDUPLICATES(BOWTIE2_ALIGN.out.bam, file(params.fasta))
+    BAM_PROPER_FILTER(BOWTIE2_ALIGN.out.bam)
+
+    PICARD_MARKDUPLICATES(BAM_PROPER_FILTER.out.bam, file(params.fasta))
     
-    BAM_FILTER_INDEX(PICARD_MARKDUPLICATES.out.bam)
+    BAM_MAPQ20_FILTER(PICARD_MARKDUPLICATES.out.bam)
 
     // QC STATISTICS
 
-    SAMTOOLS_STATS(BAM_FILTER_INDEX.out.bam_bai, file(params.fasta))
+    SAMTOOLS_INDEX(BAM_MAPQ20_FILTER.out.bam)
 
-    SAMTOOLS_IDXSTATS(BAM_FILTER_INDEX.out.bam_bai)
+    SAMTOOLS_STATS(SAMTOOLS_INDEX.out.bam_bai, file(params.fasta))
 
-    SAMTOOLS_FLAGSTAT(BAM_FILTER_INDEX.out.bam_bai)
+    SAMTOOLS_IDXSTATS(SAMTOOLS_INDEX.out.bam_bai)
+
+    SAMTOOLS_FLAGSTAT(SAMTOOLS_INDEX.out.bam_bai)
 
     // DOWNSTREAM ANALYSIS
 
-    def exp_ch = BAM_FILTER_INDEX.out.bam_bai
+    def exp_ch = SAMTOOLS_INDEX.out.bam_bai
         .filter { meta, bam, bai -> meta.control.toString() == '0' }
         .map { meta, bam, bai -> 
             tuple(meta.donor_id, meta, bam, bai)
         }
 
-    def ctrl_ch = BAM_FILTER_INDEX.out.bam_bai
+    def ctrl_ch = SAMTOOLS_INDEX.out.bam_bai
         .filter { meta, bam, bai -> meta.control.toString() == '1' }
         .map { meta, bam, bai -> 
             tuple(meta.donor_id, bam, bai)

@@ -24,6 +24,6 @@ process MACS2_CALLPEAK_NARROW {
         --gsize hs \\
         --name ${sample_id}_narrow \\
         --call-summits \\
-        -q 0.05
+        -q 0.01
     """
 }
