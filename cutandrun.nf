@@ -50,24 +50,6 @@ log.info """\
 """
 .stripIndent(true)
 
-
-process SAVE_MATCHED_SAMPLES {
-    publishDir "results/matched_samples", mode: 'copy'
-
-    input:
-    tuple val(meta), path(bam), path(bai), path(control_bam), path(control_bai)
-
-    output:
-    path "${meta.sample_id}_matched_samples.tsv"
-
-    script:
-    """
-    echo -e "sample_id\tdonor_id\tbam\tbai\tcontrol_bam\tcontrol_bai" > ${meta.sample_id}_matched_samples.tsv
-    echo -e "${meta.sample_id}\t${meta.donor_id}\t${bam}\t${bai}\t${control_bam}\t${control_bai}" >> ${meta.sample_id}_matched_samples.tsv
-    """
-}
-
-
 workflow {
 
     // INPUT CHANNEL CREATION
@@ -157,7 +139,4 @@ workflow {
         ).collect(),
         params.report_id
     )
-
-
-
 }
