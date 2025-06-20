@@ -11,7 +11,7 @@ process PICARD_MARKDUPLICATES {
     path(fasta)
 
     output:
-    tuple val(meta), path("*.filtered.dedup.bam"), path("*.filtered.dedup.bam.bai"), emit: bam_bai
+    tuple val(meta), path("*.dedup.bam"), emit: bam
     path("*.MarkDuplicates.metrics.txt"), emit: metrics
 
     script:
@@ -24,12 +24,10 @@ process PICARD_MARKDUPLICATES {
         -Xmx${avail_mem}M \\
         MarkDuplicates \\
         --INPUT ${bam} \\
-        --OUTPUT ${sample_id}.filtered.dedup.bam \\
+        --OUTPUT ${sample_id}.dedup.bam \\
         --REFERENCE_SEQUENCE ${fasta} \\
         --METRICS_FILE ${sample_id}.MarkDuplicates.metrics.txt \\
         --ASSUME_SORT_ORDER coordinate \\
         --REMOVE_DUPLICATES true
-
-    samtools index ${sample_id}.filtered.dedup.bam
     """
 }

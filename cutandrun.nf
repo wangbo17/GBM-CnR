@@ -5,9 +5,10 @@ include { FASTQC } from './modules/fastqc.nf'
 include { TRIM_GALORE } from './modules/trim_galore.nf'
 include { BOWTIE2_BUILD } from './modules/bowtie2_build.nf'
 include { BOWTIE2_ALIGN } from './modules/bowtie2_align.nf'
-include { BAM_FILTER } from './modules/bam_filter.nf'
 
 include { PICARD_MARKDUPLICATES } from './modules/picard_markduplicates.nf'
+include { BAM_FILTER_INDEX } from './modules/bam_filter_index.nf'
+
 include { SAMTOOLS_STATS } from './modules/samtools_stats.nf'
 include { SAMTOOLS_IDXSTATS } from './modules/samtools_idxstats.nf'
 include { SAMTOOLS_FLAGSTAT } from './modules/samtools_flagstat.nf'
@@ -53,7 +54,7 @@ log.info """\
 workflow {
 
     // INPUT CHANNEL CREATION
-    
+
     read_ch = Channel
         .fromPath(params.input_csv)
         .splitCsv(header:true)
@@ -67,7 +68,7 @@ workflow {
             tuple(meta, file(row.fastq_1), file(row.fastq_2))
         }
 
-    // CORE PREPROCESSING AND ALIGNMENT
+    // PREPROCESSING AND ALIGNMENT
 
     FASTQC(read_ch)
 
@@ -77,27 +78,29 @@ workflow {
 
     BOWTIE2_ALIGN(TRIM_GALORE.out.trimmed_reads, BOWTIE2_BUILD.out.bt2_index)
 
-    BAM_FILTER(BOWTIE2_ALIGN.out.bam)
+    // DUPLICATE REMOVAL AND FILTERING
 
-    // DUPLICATE REMOVAL AND QC STATISTICS
-
-    PICARD_MARKDUPLICATES(BAM_FILTER.out.bam, file(params.fasta))
+    PICARD_MARKDUPLICATES(BOWTIE2_ALIGN.out.bam, file(params.fasta))
     
-    SAMTOOLS_STATS(PICARD_MARKDUPLICATES.out.bam_bai, file(params.fasta))
+    BAM_FILTER_INDEX(PICARD_MARKDUPLICATES.out.bam)
 
-    SAMTOOLS_IDXSTATS(PICARD_MARKDUPLICATES.out.bam_bai)
+    // QC STATISTICS
 
-    SAMTOOLS_FLAGSTAT(PICARD_MARKDUPLICATES.out.bam_bai)
+    SAMTOOLS_STATS(BAM_FILTER_INDEX.out.bam_bai, file(params.fasta))
+
+    SAMTOOLS_IDXSTATS(BAM_FILTER_INDEX.out.bam_bai)
+
+    SAMTOOLS_FLAGSTAT(BAM_FILTER_INDEX.out.bam_bai)
 
     // DOWNSTREAM ANALYSIS
 
-    def exp_ch = PICARD_MARKDUPLICATES.out.bam_bai
+    def exp_ch = BAM_FILTER_INDEX.out.bam_bai
         .filter { meta, bam, bai -> meta.control.toString() == '0' }
         .map { meta, bam, bai -> 
             tuple(meta.donor_id, meta, bam, bai)
         }
 
-    def ctrl_ch = PICARD_MARKDUPLICATES.out.bam_bai
+    def ctrl_ch = BAM_FILTER_INDEX.out.bam_bai
         .filter { meta, bam, bai -> meta.control.toString() == '1' }
         .map { meta, bam, bai -> 
             tuple(meta.donor_id, bam, bai)

@@ -16,6 +16,7 @@ process BOWTIE2_ALIGN {
 
     script:
     def sample_id = meta.sample_id
+    def group = meta.group
 
     """
     prefix_name=\$(basename \$(ls ${bt2_index}/*.1.bt2) | sed -E 's/\\.1\\.bt2\$//')
@@ -28,6 +29,9 @@ process BOWTIE2_ALIGN {
         -1 ${read1} -2 ${read2} \\
         --threads ${task.cpus} \\
         2> ${sample_id}.bowtie2.log \\
-        | samtools sort -@ ${task.cpus} -o ${sample_id}.bam -
+        | samtools sort -@ ${task.cpus} -o - - \\
+        | samtools addreplacerg \\
+            -r ID:${sample_id} -r SM:${group} \\
+            -o ${sample_id}.rg.bam -
     """
 }
