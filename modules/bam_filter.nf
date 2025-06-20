@@ -3,6 +3,7 @@
 process BAM_FILTER {
     label 'process_medium'
 
+    container = 'oras://community.wave.seqera.io/library/samtools:1.22--105e5e643c53f059'
     publishDir "results/samtools/bam_filter", mode: 'copy'
 
     input:

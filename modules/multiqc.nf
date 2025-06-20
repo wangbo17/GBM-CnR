@@ -2,7 +2,8 @@
 
 process MULTIQC {
     label 'process_single'
-    
+
+    container = 'oras://community.wave.seqera.io/library/multiqc:1.29--8e22d300f136081a'
     publishDir "results/multiqc", mode: 'copy'
 
     input:

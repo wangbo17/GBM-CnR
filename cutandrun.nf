@@ -12,7 +12,8 @@ include { SAMTOOLS_STATS } from './modules/samtools_stats.nf'
 include { SAMTOOLS_IDXSTATS } from './modules/samtools_idxstats.nf'
 include { SAMTOOLS_FLAGSTAT } from './modules/samtools_flagstat.nf'
 
-// include { MACS2_CALLPEAK } from './modules/macs2_callpeak.nf'
+include { MACS2_CALLPEAK_NARROW } from './modules/macs2_callpeak_narrow.nf'
+include { MACS2_CALLPEAK_BROAD } from './modules/macs2_callpeak_broad.nf'
 
 include { MULTIQC } from './modules/multiqc.nf'
 
@@ -123,18 +124,22 @@ workflow {
             tuple(exp_meta, exp_bam, exp_bai, ctrl_bam, ctrl_bai)
         }
 
-    bam_paired_ch.view { meta, exp_bam, exp_bai, ctrl_bam, ctrl_bai ->
-        """
-        [Matched Pair]
-        Group     : ${meta.group}
-        Sample ID : ${meta.sample_id}
-        Donor ID  : ${meta.donor_id}
-        Exp BAM   : ${exp_bam}
-        Ctrl BAM  : ${ctrl_bam}
-        Exp BAI   : ${exp_bai}
-        Ctrl BAI  : ${ctrl_bai}
-        """
-    }
+//    bam_paired_ch.view { meta, exp_bam, exp_bai, ctrl_bam, ctrl_bai ->
+//        """
+//        [Matched Pair]
+//        Group     : ${meta.group}
+//        Sample ID : ${meta.sample_id}
+//        Donor ID  : ${meta.donor_id}
+//        Exp BAM   : ${exp_bam}
+//        Ctrl BAM  : ${ctrl_bam}
+//        Exp BAI   : ${exp_bai}
+//        Ctrl BAI  : ${ctrl_bai}
+//        """
+//    }
+
+    MACS2_CALLPEAK_NARROW(bam_paired_ch)
+
+    MACS2_CALLPEAK_BROAD(bam_paired_ch)
 
     // SUMMARY REPORT GENERATION
 

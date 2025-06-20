@@ -2,7 +2,8 @@
 
 process PICARD_MARKDUPLICATES {
     label 'process_medium'
-    
+
+    container = 'oras://community.wave.seqera.io/library/picard_samtools:33d1f34d6faf154e'
     publishDir "results/picard/markduplicates", mode: 'copy'
 
     input:

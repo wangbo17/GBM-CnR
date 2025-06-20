@@ -2,7 +2,8 @@
 
 process BOWTIE2_ALIGN {
     label 'process_medium'
-    
+
+    container = 'oras://community.wave.seqera.io/library/bowtie2_samtools:6df3a3213a70e258'
     publishDir "results/bowtie2/align", mode: 'copy'
 
     input:
