@@ -1,0 +1,32 @@
+#!/usr/bin/env nextflow
+
+process BOWTIE2_ALIGN {
+    label 'process_medium'
+    
+    publishDir "results/bowtie2/align", mode: 'copy'
+
+    input:
+    tuple val(meta), path(read1), path(read2)
+    path bt2_index
+
+    output:
+    tuple val(meta), path("*.bam"), emit: 'bam'
+    path "*.log", emit: 'log'
+
+    script:
+    def sample_id = meta.sample_id
+
+    """
+    prefix_name=\$(basename \$(ls ${bt2_index}/*.1.bt2) | sed -E 's/\\.1\\.bt2\$//')
+    prefix_path=${bt2_index}/\$prefix_name
+
+    bowtie2 \\
+        --local --very-sensitive-local \\
+        --no-unal \\
+        -x \$prefix_path \\
+        -1 ${read1} -2 ${read2} \\
+        --threads ${task.cpus} \\
+        2> ${sample_id}.bowtie2.log \\
+        | samtools sort -@ ${task.cpus} -o ${sample_id}.bam -
+    """
+}
