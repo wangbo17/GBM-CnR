@@ -53,6 +53,7 @@ log.info """\
 workflow {
 
     // INPUT CHANNEL CREATION
+    
     read_ch = Channel
         .fromPath(params.input_csv)
         .splitCsv(header:true)
@@ -67,6 +68,7 @@ workflow {
         }
 
     // CORE PREPROCESSING AND ALIGNMENT
+
     FASTQC(read_ch)
 
     TRIM_GALORE(read_ch)

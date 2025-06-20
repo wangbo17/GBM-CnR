@@ -24,8 +24,6 @@ process MACS2_CALLPEAK_NARROW {
         --gsize hs \\
         --name ${sample_id} \\
         -q 0.05 \\
-        --nomodel \\
-        --extsize 150 \\
         --call-summits
     """
 }

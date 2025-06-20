@@ -25,8 +25,6 @@ process MACS2_CALLPEAK_BROAD {
         --name ${sample_id} \\
         -q 0.05 \\
         --broad \\
-        --broad-cutoff 0.1 \\
-        --nomodel \\
-        --extsize 150
+        --broad-cutoff 0.1
     """
 }
