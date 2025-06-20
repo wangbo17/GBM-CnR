@@ -12,7 +12,7 @@ include { SAMTOOLS_STATS } from './modules/samtools_stats.nf'
 include { SAMTOOLS_IDXSTATS } from './modules/samtools_idxstats.nf'
 include { SAMTOOLS_FLAGSTAT } from './modules/samtools_flagstat.nf'
 
-include { MACS2_CALLPEAK } from './modules/macs2_callpeak.nf'
+// include { MACS2_CALLPEAK } from './modules/macs2_callpeak.nf'
 
 include { MULTIQC } from './modules/multiqc.nf'
 
@@ -135,8 +135,6 @@ workflow {
         Ctrl BAI  : ${ctrl_bai}
         """
     }
-
-    MACS2_CALLPEAK(bam_paired_ch)
 
     // SUMMARY REPORT GENERATION
 
