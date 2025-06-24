@@ -6,4 +6,4 @@
 #SBATCH --mem=4G
 
 conda activate nf_env
-nextflow run cutandrun.nf -resume
+nextflow run cutandrun.nf -resume 2eca8adf12

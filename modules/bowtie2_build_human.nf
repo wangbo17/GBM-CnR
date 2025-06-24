@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 process BOWTIE2_BUILD_HUMAN {
-    label 'process_low'
+    label 'process_medium'
 
     container = 'oras://community.wave.seqera.io/library/bowtie2_samtools:6df3a3213a70e258'
     publishDir "results/bowtie2/build/human"
