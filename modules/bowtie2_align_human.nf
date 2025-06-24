@@ -1,17 +1,17 @@
 #!/usr/bin/env nextflow
 
-process BOWTIE2_ALIGN {
+process BOWTIE2_ALIGN_HUMAN {
     label 'process_medium'
 
     container = 'oras://community.wave.seqera.io/library/bowtie2_samtools:6df3a3213a70e258'
-    publishDir "results/bowtie2/align", mode: 'copy'
+    publishDir "results/bowtie2/align/human", mode: 'copy'
 
     input:
     tuple val(meta), path(read1), path(read2)
     path bt2_index
 
     output:
-    tuple val(meta), path("*.bam"), emit: 'bam'
+    tuple val(meta), path("*.rg.bam"), emit: 'bam'
     path "*.log", emit: 'log'
 
     script:

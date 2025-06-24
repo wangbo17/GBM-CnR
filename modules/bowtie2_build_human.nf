@@ -1,10 +1,10 @@
 #!/usr/bin/env nextflow
 
-process BOWTIE2_BUILD {
-    label 'process_medium'
+process BOWTIE2_BUILD_HUMAN {
+    label 'process_low'
 
     container = 'oras://community.wave.seqera.io/library/bowtie2_samtools:6df3a3213a70e258'
-    publishDir "results/bowtie2/build"
+    publishDir "results/bowtie2/build/human"
 
     input:
     path fasta_file

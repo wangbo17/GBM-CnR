@@ -28,10 +28,13 @@ include { MULTIQC } from './modules/multiqc.nf'
  */
 
 // Primary input
-params.input_csv = "data/samplesheet.csv"
-params.spikein_genome = "data/e_coli_U00096_3.fa.gz"
-params.fasta = "data/GRCh38.primary_assembly.genome.fa"
-params.gtf = "data/gencode.v48.primary_assembly.annotation.gtf"
+params.input_csv = "data/samplesheet_test.csv"
+params.blacklist = "data/hg38-blacklist.bed"
+params.spikein_genome = "test-datasets/cutandrun/reference/genomes/e_coli_U00096_3.fa.gz"
+params.fasta = "test-datasets/cutandrun/reference/genomes/hg38-chr20.fa.gz"
+params.gtf = "test-datasets/cutandrun/reference/genomes/hg38-chr20-genes.gtf.gz"
+params.bowtie2 = "test-datasets/cutandrun/reference/genomes/hg38-chr20-bowtie2.tar.gz"
+params.gene_bed = "test-datasets/cutandrun/reference/genomes/hg38-chr20-genes.bed.gz"
 params.report_id = "cutandrun"
 
 log.info """\
