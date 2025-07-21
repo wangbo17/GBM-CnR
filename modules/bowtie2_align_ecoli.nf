@@ -24,14 +24,14 @@ process BOWTIE2_ALIGN_ECOLI {
     prefix_path=${bt2_index}/\$prefix_name
 
     bowtie2 \\
-        --end-to-end --very-sensitive --no-mixed --no-discordant \\
-        --no-overlap --no-dovetail \\
+        --end-to-end --very-sensitive \\
+        --no-mixed --no-discordant \\
         --un-conc-gz ${sample_id}.unmapped.gz \\
         --phred33 -I 10 -X 700 \\
         -x \$prefix_path \\
         -1 ${read1} -2 ${read2} \\
         --threads ${task.cpus} \\
-        -S ${sample_id}.bowtie2.spikein.sam
+        -S ${sample_id}.bowtie2.spikein.sam \\
         2> ${sample_id}.bowtie2.spikein.log
     
     seqDepthDouble=\$(samtools view -F 0x04 ${sample_id}.bowtie2.spikein.sam | wc -l)

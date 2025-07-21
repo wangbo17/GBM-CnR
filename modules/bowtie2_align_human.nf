@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 process BOWTIE2_ALIGN_HUMAN {
-    label 'process_medium'
+    label 'process_high'
 
     container = 'oras://community.wave.seqera.io/library/bowtie2_samtools:6df3a3213a70e258'
     publishDir "results/bowtie2/align/human", mode: 'copy'
@@ -23,7 +23,8 @@ process BOWTIE2_ALIGN_HUMAN {
     prefix_path=${bt2_index}/\$prefix_name
 
     bowtie2 \\
-        --local --very-sensitive --no-mixed --no-discordant \\
+        --local --very-sensitive-local \\
+        --no-mixed --no-discordant --dovetail \\
         --phred33 -I 10 -X 700 \\
         -x \$prefix_path \\
         -1 ${read1} -2 ${read2} \\

@@ -28,7 +28,7 @@ include { MULTIQC } from './modules/multiqc.nf'
  */
 
 // Primary input
-params.input_csv = "data/samplesheet.csv"
+params.input_csv = "data/samplesheet_all.csv"
 params.spikein_genome = "data/e_coli_U00096_3.fa.gz"
 params.fasta = "data/GRCh38.primary_assembly.genome.fa"
 params.gtf = "data/gencode.v48.primary_assembly.annotation.gtf"
@@ -135,9 +135,9 @@ workflow {
 //        """
 //    }
 
-    MACS2_CALLPEAK_NARROW(bam_paired_ch)
+    // MACS2_CALLPEAK_NARROW(bam_paired_ch)
 
-    MACS2_CALLPEAK_BROAD(bam_paired_ch)
+    // MACS2_CALLPEAK_BROAD(bam_paired_ch)
 
     // SUMMARY REPORT GENERATION
 

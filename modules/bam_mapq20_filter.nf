@@ -16,7 +16,7 @@ process BAM_MAPQ20_FILTER {
     def sample_id = meta.sample_id
 
     """
-    samtools view -q 20 -@ ${task.cpus} -h -b ${bam} > ${sample_id}.filtered.dedup.bam
+    samtools view -q 20 -@ ${task.cpus} -h -b -o ${sample_id}.filtered.dedup.bam ${bam}
     # -q 20    : require mapping quality ≥ 20 to exclude ambiguous alignments
     """
 }
